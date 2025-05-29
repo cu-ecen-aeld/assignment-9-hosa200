@@ -2,7 +2,7 @@
 #Script to run QEMU for buildroot as the default configuration qemu_aarch64_virt_defconfig
 #Host forwarding: Host Port 10022 ->> QEMU Port 22 
 #Author: Siddhant Jajoo.
-sudo kill $(sudo lsof -t -i:10022 -c ssh)
+#sudo kill $(sudo lsof -t -i:10022 -c ssh)
 
 qemu-system-aarch64 \
     -M virt  \
