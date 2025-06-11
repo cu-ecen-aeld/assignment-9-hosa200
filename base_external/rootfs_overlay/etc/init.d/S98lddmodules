@@ -16,7 +16,8 @@ fi
 
 # invoke insmod with all arguments we got
 # and use a pathname, as insmod doesn't look in . by default
-insmod ./$module.ko $* || exit 1
+# insmod ./$module.ko $* || exit 1
+/sbin/modprobe scull || exit 1
 
 # retrieve major number
 major=$(awk "\$2==\"$module\" {print \$1}" /proc/devices)
@@ -82,18 +83,11 @@ rm -f /dev/${device} /dev/${device}[0-3]
 
 startup_faulty () {
 
-module=$1
+module=faulty
 # Use the same name for the device as the name used for the module
-device=$1
+device=faulty
 # Support read/write for owner and group, read only for everyone using 644
 mode="664"
-
-if [ $# -ne 1 ]; then
-	echo "Wrong number of arguments"
-	echo "usage: $0 module_name"
-	echo "Will create a corresponding device /dev/module_name associated with module_name.ko"
-	exit 1
-fi
 
 set -e
 # Group: since distributions do it differently, look for wheel or use staff
@@ -105,7 +99,9 @@ else
 fi
 
 echo "Load our module, exit on failure"
-insmod ./$module.ko $* || exit 1
+#insmod ./$module.ko $* || exit 1
+/sbin/modprobe faulty || exit 1
+
 echo "Get the major number (allocated with allocate_chrdev_region) from /proc/devices"
 major=$(awk "\$2==\"$module\" {print \$1}" /proc/devices)
 if [ ! -z ${major} ]; then
@@ -124,15 +120,8 @@ fi
 
 shutdown_faulty () {
 
-module=$1
-device=$1
-
-if [ $# -ne 1 ]; then
-	echo "Wrong number of arguments"
-	echo "usage: $0 module_name"
-	echo "Will unload the module specified by module_name and remove assocaited device"
-	exit 1
-fi
+module=faulty
+device=faulty
 
 # invoke rmmod with all arguments we got
 rmmod $module || exit 1
