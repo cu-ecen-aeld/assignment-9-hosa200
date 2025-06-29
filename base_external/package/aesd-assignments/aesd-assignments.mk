@@ -21,9 +21,11 @@ ifeq ($(BR2_PACKAGE_USE_AESD_CHAR_DEVICE),y)
 else
 	MY_CFLAGS += -DUSE_AESD_CHAR_DEVICE=0
 endif
+
 define AESD_ASSIGNMENTS_BUILD_CMDS
 	$(MAKE) $(TARGET_CONFIGURE_OPTS) -C $(@D)/finder-app all
 	$(MAKE) $(TARGET_CONFIGURE_OPTS) -C $(@D)/server all
+	#$(MAKE) $(TARGET_CONFIGURE_OPTS) -C $(@D)/aesd-char-driver modules
 endef
 
 # TODO add your writer, finder and finder-test utilities/scripts to the installation steps below
@@ -41,4 +43,5 @@ define AESD_ASSIGNMENTS_INSTALL_TARGET_CMDS
 	$(INSTALL) -m 0755 $(@D)/assignment-autotest/test/assignment5/* $(TARGET_DIR)/usr/bin
 endef
 
+$(eval $(kernel-module))
 $(eval $(generic-package))
